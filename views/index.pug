@@ -3,3 +3,11 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+
+  h1 Dynamic Content 
+
+  p Browse our latest products: 
+
+  ul 
+    li #[strong Items:] !{item_count}
+    li #[strong Categories:] !{category_count}
