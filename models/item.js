@@ -17,6 +17,18 @@ const ItemSchema = new Schema({
     ref: "Category",
     required: true,
   },
+  price: {
+    type: String,
+    required: true,
+    maxLength: 4,
+    minLength: 2,
+  },
+  in_stock: {
+    type: Number,
+    required: true,
+    max: 10000,
+    min: 0,
+  },
 });
 
 //Item URL

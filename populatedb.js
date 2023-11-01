@@ -39,11 +39,13 @@ async function categoryCreate(index, name, description) {
   console.log(`Added category: ${name}`);
 }
 
-async function itemCreate(index, name, description, category) {
+async function itemCreate(index, name, description, category, price, in_stock) {
   const itemDetail = {
     name: name,
     description: description,
     category: category,
+    price: price,
+    in_stock: in_stock,
   };
 
   const item = new Item(itemDetail);
@@ -87,43 +89,57 @@ async function createItems() {
       0,
       "Banana",
       "Sweet and creamy bananas, a great source of potassium and energy.",
-      categories[0]
+      categories[0],
+      "12$",
+      423
     ),
     itemCreate(
       1,
       "Strawberries",
       " and juicy red strawberries, versatile for desserts, salads, or snacking.",
-      categories[0]
+      categories[0],
+      "18$",
+      215
     ),
     itemCreate(
       2,
       "Broccoli",
       "Nutrient-rich green florets, great for steaming, roasting, or adding to salads.",
-      categories[1]
+      categories[1],
+      "6$",
+      622
     ),
     itemCreate(
       3,
       "Butter",
       "Smooth and creamy unsalted butter, essential for baking and cooking.",
-      categories[2]
+      categories[2],
+      "15$",
+      24
     ),
     itemCreate(
       4,
       "Yogurt",
       "Thick and creamy plain Greek yogurt, high in protein and perfect for breakfast.",
-      categories[2]
+      categories[2],
+      "8$",
+      163
     ),
     itemCreate(
       5,
       "Bagels",
       "Chewy and delicious plain bagels, ideal for breakfast or making sandwiches.",
-      categories[3]
+      categories[3],
+      "25$",
+      35
     ),
     itemCreate(
       6,
       "Muffins (Blueberry)",
       "Moist and flavorful blueberry muffins, great for a quick breakfast or snack.",
-      categories[3]
+      categories[3],
+      "35$",
+      62
     ),
   ]);
 }
