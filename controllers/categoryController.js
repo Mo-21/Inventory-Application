@@ -56,7 +56,7 @@ exports.category_create_post = [
     .escape() //to remove html elements
     .withMessage("Name is a required field")
     .isAlphanumeric()
-    .withMessage("Please write in English"),
+    .withMessage("Please only use English Alphabet - No spaces are allowed"),
   body("description")
     .trim()
     .isLength({ max: 100 })
@@ -88,11 +88,41 @@ exports.category_create_post = [
 ];
 
 exports.category_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("DRAFT DATA: category_delete_get");
+  const [specificCategory, allItems] = await Promise.all([
+    Category.findById(req.params.id).exec(),
+    Item.find({ category: req.params.id }, "name description").exec(),
+  ]);
+
+  if (specificCategory === null) {
+    //no result
+    res.redirect("/catalog/categories");
+  }
+
+  res.render("catViews/delete_category", {
+    title: "Delete Category?",
+    specificCategory: specificCategory,
+    items: allItems,
+  });
 });
 
 exports.category_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("DRAFT DATA: category_delete_post");
+  const [specificCategory, allItems] = await Promise.all([
+    Category.findById(req.params.id).exec(),
+    Item.find({ category: req.params.id }, "name description").exec(),
+  ]);
+
+  if (allItems.length > 0) {
+    //If category has items >> it cannot be deleted
+    res.render("catViews/delete_category", {
+      title: "Delete Category?",
+      specificCategory: specificCategory,
+      items: allItems,
+    });
+    return;
+  } else {
+    await Category.findByIdAndDelete(req.body.catId);
+    res.redirect("/catalog/categories");
+  }
 });
 
 exports.category_update_get = asyncHandler(async (req, res, next) => {

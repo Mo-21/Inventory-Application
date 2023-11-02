@@ -109,11 +109,27 @@ exports.item_create_post = [
 ];
 
 exports.item_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("DRAFT DATA: item_delete_get");
+  const [allItems] = await Promise.all([
+    Item.findById(req.params.id, "name description")
+      .populate("category", "name")
+      .exec(),
+  ]);
+
+  res.render("itemsView/delete_item", {
+    title: "Delete Item?",
+    items: allItems,
+  });
 });
 
 exports.item_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("DRAFT DATA: item_delete_post");
+  const [allItems] = await Promise.all([
+    Item.findById(req.params.id, "name description")
+      .populate("category", "name")
+      .exec(),
+  ]);
+
+  await Item.findByIdAndDelete(req.body.itemId);
+  res.redirect("/catalog/items");
 });
 
 exports.item_update_get = asyncHandler(async (req, res, next) => {

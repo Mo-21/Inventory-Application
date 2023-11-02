@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+  h1 #{title} >> "#{specificCategory.name}"
+  p= specificCategory.description
+
+  if items.length
+
+    p #[strong Delete the following items before attempting to delete this specific Category.]
+
+    div(class="mt-2 ml-2")
+
+      h4 Items
+
+      dl
+      each item in items
+        dt
+          a(href=item.url) #{item.name}
+        dd #{item.description}
+
+  else
+    p Do you really want to delete this specific Category?
+
+    form(method='POST' action='')
+      div.form-group
+        input#catId.form-control(type='hidden',name='catId', required='true', value=specificCategory._id )
+
+      button.btn.btn-primary(type='submit') Delete
