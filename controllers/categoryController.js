@@ -126,9 +126,71 @@ exports.category_delete_post = asyncHandler(async (req, res, next) => {
 });
 
 exports.category_update_get = asyncHandler(async (req, res, next) => {
-  res.send("DRAFT DATA: category_update_get");
+  const [specificCategory, allItems] = await Promise.all([
+    Category.findById(req.params.id).exec(),
+    Item.find({ category: req.params.id }, "name description").exec(),
+  ]);
+
+  if (specificCategory === null) {
+    // No results.
+    const err = new Error("Book not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("catViews/category_form", {
+    title: "Update Category?",
+    specificCategory: specificCategory,
+    allItems: allItems,
+  });
 });
 
-exports.category_update_post = asyncHandler(async (req, res, next) => {
-  res.send("DRAFT DATA: category_update_post");
-});
+exports.category_update_post = [
+  body("name")
+    .trim() //to remove whitespace
+    .isLength({ min: 1 })
+    .escape() //to remove html elements
+    .withMessage("Name is a required field")
+    .isAlphanumeric()
+    .withMessage("Please only use English Alphabet - No spaces are allowed"),
+  body("description")
+    .trim()
+    .isLength({ max: 100 })
+    .escape()
+    .withMessage("Max 100 chars allowed in description"),
+
+  asyncHandler(async (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+
+    const category = new Category({
+      name: req.body.name,
+      description: req.body.description,
+      _id: req.params.id,
+    });
+
+    // There are errors. Render form again with sanitized values/errors messages.
+    if (!errors.isEmpty()) {
+      const [specificCategory, allItems] = await Promise.all([
+        Category.findById(req.params.id).exec(),
+        Item.find({ category: req.params.id }, "name description").exec(),
+      ]);
+
+      res.render("catViews/category_form", {
+        title: "Update Category?",
+        specificCategory: specificCategory,
+        allItems: allItems,
+        errors: errors.array(),
+      });
+
+      return;
+    } else {
+      const updatedCategory = await Category.findByIdAndUpdate(
+        req.params.id,
+        category,
+        {}
+      );
+      res.redirect(updatedCategory.url);
+    }
+  }),
+];
