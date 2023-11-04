@@ -2,6 +2,9 @@
 
 This web application allows users to manage their inventory with categories and items. Users can perform CRUD operations (Create, Read, Update, Delete) on both categories and items.
 
+![Homepage](public/images/home-page.png)
+![Item page](public/images/item-page.png)
+
 ## Project Overview
 
 The Inventory Management App provides the following functionalities:
